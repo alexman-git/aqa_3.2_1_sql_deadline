@@ -24,10 +24,14 @@ public class DbUtils {
     @SneakyThrows
     public static void cleanDatabase() {
         var authCodesClean = "DELETE FROM auth_codes";
+        var cardsClean = "DELETE FROM cards";
+        var usersClean = "DELETE FROM users";
         var runner = new QueryRunner();
 
         try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/app_db", "user", "pass")) {
             runner.update(conn, authCodesClean);
+            runner.update(conn, cardsClean);
+            runner.update(conn, usersClean);
         }
     }
 }

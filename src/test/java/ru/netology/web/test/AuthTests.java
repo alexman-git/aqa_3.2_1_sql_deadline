@@ -8,11 +8,31 @@ import ru.netology.web.page.LoginPage;
 
 import static com.codeborne.selenide.Selenide.open;
 
-public class NegativeTests {
+public class AuthTests {
 
     @AfterAll
     static void cleanData() {
         DbUtils.cleanDatabase();
+    }
+
+    @Test
+    void shouldAuthorizeSuccessfully_1stUser() {
+        var loginPage = open("http://localhost:9999", LoginPage.class);
+        var authInfo = DataHelper.getValidAuthInfo_1stUser();
+        var verificationPage = loginPage.validAuthInfo(authInfo);
+        var verifyInfo = DbUtils.getValidVerificationCode();
+        var dashboardPage = verificationPage.validCode(verifyInfo);
+        dashboardPage.login();
+    }
+
+    @Test
+    void shouldAuthorizeSuccessfully_2ndUser() {
+        var loginPage = open("http://localhost:9999", LoginPage.class);
+        var authInfo = DataHelper.getValidAuthInfo_2ndUser();
+        var verificationPage = loginPage.validAuthInfo(authInfo);
+        var verifyInfo = DbUtils.getValidVerificationCode();
+        var dashboardPage = verificationPage.validCode(verifyInfo);
+        dashboardPage.login();
     }
 
     @Test
@@ -81,7 +101,7 @@ public class NegativeTests {
     }
 
     @Test
-    void shouldBlockAfterThreeAttemptsOfInvalidPassword() {
+    void shouldBlockAfterThreeAttemptsWithInvalidPassword() {
         var loginPage = open("http://localhost:9999", LoginPage.class);
         var authInfo = DataHelper.getValidLoginAndInvalidPassword_1stUser();
         loginPage.blockSystem(authInfo);
